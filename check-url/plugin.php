@@ -3,7 +3,7 @@
 Plugin Name: Check URL
 Plugin URI: http://code.google.com/p/yourls-check-url/
 Description: This plugin checks the reachability of an entered URL before creating the short link for it. An error is then returned if the entered URL is unreachable.
-Version: 1.3
+Version: 1.4
 Author: Aylwin
 Author URI: http://adigitalife.net/
 */
@@ -38,11 +38,17 @@ function churl_reachability( $churl_reachable, $url, $keyword = '' ) {
 	}
 
 	// Check if the long URL is reachable	
-	require_once( YOURLS_INC.'/functions-http.php' );
-	$churl_reachable = yourls_get_remote_content( $url );
-	
+	 $resURL = curl_init();
+	curl_setopt($resURL, CURLOPT_URL, $url);
+	curl_setopt($resURL, CURLOPT_BINARYTRANSFER, 1);
+	curl_setopt($resURL, CURLOPT_HEADERFUNCTION, 'curlHeaderCallback');
+	curl_setopt($resURL, CURLOPT_FAILONERROR, 1);
+	curl_exec ($resURL);
+	$intReturnCode = curl_getinfo($resURL, CURLINFO_HTTP_CODE);
+	curl_close ($resURL);
+ 
 	// Return error if the entered URL is unreachable
-	if ( $churl_reachable == false ){
+	if ($intReturnCode != 200 && $intReturnCode != 302 && $intReturnCode != 304) {
 		$return['status']   = 'fail';
 		$return['code']     = 'error:url';
 		$return['message']  = 'The entered URL is unreachable.  Check the URL or try again later.';
