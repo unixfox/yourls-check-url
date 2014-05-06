@@ -9,7 +9,7 @@ Author URI: http://adigitalife.net/
 */
 
 // Hook our custom function into the 'shunt_add_new_link' filter
-yourls_add_filter( 'shunt_add_new_link', 'churl_reachability' );
+yourls_add_filter( 'shunt_add_new_link', 'churl_reachability', 1 );
 
 // Add a new link in the DB, either with custom keyword, or find one
 function churl_reachability( $churl_reachable, $url, $keyword = '' ) {
