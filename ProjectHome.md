@@ -1,0 +1,1 @@
+This is a plugin for YOURLS that check the reachability of an entered URL before creating the short link for it.
